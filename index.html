@@ -159,7 +159,8 @@
 
     .beer-card img {
       max-width: 100px;
-      margin-bottom: 8px;
+      margin: 0 auto 8px auto;
+      display: block;
     }
 
     .beer-card input[type="number"] {
@@ -168,6 +169,10 @@
       border: 1px solid #ccc;
       border-radius: 6px;
       margin-top: 6px;
+    }
+
+    input.error-border {
+      border-color: red;
     }
 
     .form-actions {
@@ -221,6 +226,18 @@
   </form>
 
   <script>
+    function validateQty(input, maxQty) {
+      const val = parseInt(input.value || '0');
+      const errorDiv = input.nextElementSibling;
+      if (val > maxQty) {
+        errorDiv.style.display = 'block';
+        input.classList.add('error-border');
+      } else {
+        errorDiv.style.display = 'none';
+        input.classList.remove('error-border');
+      }
+    }
+
     async function loadInventory() {
       const res = await fetch('https://docs.google.com/spreadsheets/d/177OyfU6g2jc8FqdPyzk5tw-tcEwlUvsVgPdr80rDGVU/export?format=csv');
       const text = await res.text();
@@ -248,7 +265,8 @@
               <div><strong>${title}</strong></div>
               <div>$${wholesale} / ${pack}</div>
               <div>Qty: ${qty}</div>
-              <input type="number" name="item_${id}_cases" min="0" value="0" onchange="updateTotal()">
+              <input type="number" name="item_${id}_cases" min="0" value="0" onchange="validateQty(this, ${qty}); updateTotal()">
+              <div class="error-msg" style="color:red; font-size:13px; display:none;">Not enough stock available</div>
               <input type="hidden" name="item_${id}_title" value="${title}">
               <input type="hidden" name="item_${id}_price" value="${wholesale}">
             </div>
@@ -267,7 +285,9 @@
         const qty = parseInt(input.value || '0');
         const base = input.name.replace('_cases', '');
         const price = parseFloat(document.querySelector(`[name='${base}_price']`).value || '0');
-        subtotal += qty * price;
+        if (!input.classList.contains('error-border')) {
+          subtotal += qty * price;
+        }
       });
       const gst = subtotal * 0.05;
       const total = subtotal + gst;
