@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -78,66 +78,7 @@
       0% { transform: translate(-50%, -50%) rotate(0deg); }
       100% { transform: translate(-50%, -50%) rotate(360deg); }
     }
-    .brewery-group {
-      margin-bottom: 20px;
-      background: white;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-    }
-    .brewery-header {
-      background: #001f3f;
-      color: white;
-      padding: 12px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .brewery-body { display: none; padding: 12px; }
-    .brewery-group.open .brewery-body { display: flex; flex-wrap: wrap; gap: 12px; }
-    .beer-item {
-      background: #f9f9f9;
-      border-radius: 8px;
-      padding: 10px;
-      text-align: center;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-      cursor: pointer;
-      width: 180px;
-    }
-    .beer-item img {
-      width: 100px;
-      height: auto;
-      margin-bottom: 8px;
-    }
-    .beer-popup-modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      justify-content: center;
-      align-items: center;
-      z-index: 3000;
-    }
-    .beer-popup-content {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      max-width: 400px;
-      text-align: center;
-    }
-    .beer-popup-content img {
-      max-width: 200px;
-      margin-bottom: 12px;
-    }
-    .beer-popup-content button {
-      background: #001f3f;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 12px;
-    }
+    #productList { margin-bottom: 20px; }
   </style>
 </head>
 <body>
@@ -166,123 +107,73 @@
     </main>
   </form>
 
-  <div id="beerModal" class="beer-popup-modal" onclick="this.style.display='none'">
-    <div class="beer-popup-content" onclick="event.stopPropagation()">
-      <img id="modalImage" src="" alt="">
-      <h3 id="modalTitle"></h3>
-      <p id="modalDetails"></p>
-      <label>Cases: <input type="number" id="modalQty" min="0"></label>
-      <input type="hidden" id="modalNameField">
-      <button onclick="addQtyToForm()">Add to Order</button>
-    </div>
-  </div>
-
   <script>
     const endpoint = "https://script.google.com/macros/s/AKfycbzlClfhUfPWSc7UibV7wc9DvtLMScZLRWRcQwB0kdZ10CAO9VySH8Q4-OGa4GtsUCx4/exec";
 
-    function parseCSV(text) {
-      const rows = [];
-      const lines = text.trim().split('\n');
-      const headers = lines[0].split(',');
-      for (let i = 1; i < lines.length; i++) {
-        const row = [];
-        let insideQuotes = false, value = '', line = lines[i];
-        for (let j = 0; j < line.length; j++) {
-          const char = line[j];
-          if (char === '"') insideQuotes = !insideQuotes;
-          else if (char === ',' && !insideQuotes) {
-            row.push(value);
-            value = '';
-          } else {
-            value += char;
-          }
-        }
-        row.push(value);
-        rows.push(row);
-      }
-      return rows;
-    }
-
-    function groupByBrewery(products) {
-      const groups = {};
-      for (const row of products) {
-        const [title] = row;
-        const brewery = title.split(' (')[0];
-        if (!groups[brewery]) groups[brewery] = [];
-        groups[brewery].push(row);
-      }
-      return groups;
-    }
-
-    function showPopup(title, imageUrl, details, id) {
-      document.getElementById('modalTitle').innerText = title;
-      document.getElementById('modalImage').src = imageUrl;
-      document.getElementById('modalDetails').innerHTML = details;
-      document.getElementById('modalQty').setAttribute('data-id', id);
-      document.getElementById('modalNameField').value = title;
-      document.getElementById('beerModal').style.display = 'flex';
-    }
-
-    function addQtyToForm() {
-      const qty = document.getElementById('modalQty').value;
-      const id = document.getElementById('modalQty').getAttribute('data-id');
-      const name = document.getElementById('modalNameField').value;
-      const input = document.querySelector(`[name='item_${id}_cases']`);
-      input.value = qty;
-      document.getElementById('beerModal').style.display = 'none';
-    }
-
-    function createBrewerySection(brewery, beers) {
-      const beerItems = beers.map((product, index) => {
-        const [title, packSize, retail, wholesale, imageUrl, casePrice, status, qty] = product;
-        if (status !== 'yes') return '';
-        const id = `${brewery.replace(/\s+/g, '_')}_${index}`;
-        const details = `Wholesale: $${wholesale}<br>Available: ${qty}<br>Pack Size: ${packSize}`;
-
-        return `
-          <div class="beer-item" onclick="showPopup('${title}', '${imageUrl}', \`${details}\`, '${id}')">
-            <img src="${imageUrl}" alt="${title}">
-            <div><strong>${title}</strong></div>
-            <div style="font-size: 14px;">$${wholesale} / ${packSize}</div>
-            <input type="hidden" name="item_${id}_title" value="${title}">
-            <input type="hidden" name="item_${id}_price" value="${wholesale}">
-            <input type="hidden" name="item_${id}_cases" value="0">
-          </div>
-        `;
-      }).join('');
-
-      return `
-        <div class="brewery-group" onclick="this.classList.toggle('open')">
-          <div class="brewery-header">${brewery}</div>
-          <div class="brewery-body">${beerItems}</div>
-        </div>
-      `;
+    function updateTotal() {
+      let subtotal = 0;
+      const caseInputs = document.querySelectorAll("input[name^='item_'][name$='_cases']");
+      caseInputs.forEach(input => {
+        const qty = parseInt(input.value || '0', 10);
+        const base = input.name.replace('_cases', '');
+        const priceInput = document.querySelector(`[name='${base}_price']`);
+        const price = parseFloat(priceInput?.value || '0');
+        subtotal += qty * price;
+      });
+      const gst = subtotal * 0.05;
+      const total = subtotal + gst;
+      document.querySelector('.order-total-header').innerHTML = 
+        `Total: $${total.toFixed(2)}<br><span class='gst-line' style='font-weight:normal; font-size:14px;'>Includes 5% GST</span>`;
     }
 
     async function loadInventory() {
       const res = await fetch('https://docs.google.com/spreadsheets/d/177OyfU6g2jc8FqdPyzk5tw-tcEwlUvsVgPdr80rDGVU/export?format=csv');
       const text = await res.text();
-      const rows = parseCSV(text);
-      const grouped = groupByBrewery(rows);
-      const html = Object.entries(grouped).map(([brewery, beers]) => createBrewerySection(brewery, beers)).join('');
+      const rows = text.trim().split('\n').map(row => row.split(','));
+      const headers = rows.shift();
+      const grouped = {};
+      for (const row of rows) {
+        const title = row[0];
+        const brewery = title.split(' (')[0];
+        if (!grouped[brewery]) grouped[brewery] = [];
+        grouped[brewery].push(row);
+      }
+      let html = '';
+      for (const brewery in grouped) {
+        html += `<details><summary><strong>${brewery}</strong></summary><div style='display:flex; flex-wrap:wrap; gap:12px; padding:12px;'>`;
+        for (const row of grouped[brewery]) {
+          const [title, pack, retail, wholesale, img, casePrice, status, qty] = row;
+          if (status !== 'yes') continue;
+          const id = `${title.replace(/\W+/g, '_')}`;
+          html += `
+            <div style='background:white; padding:10px; border-radius:10px; width:200px; text-align:center; box-shadow:0 1px 4px rgba(0,0,0,0.05);'>
+              <img src='${img}' style='max-width:100px;'><br>
+              <strong>${title}</strong><br>
+              <small>$${wholesale} / ${pack}</small><br>
+              <small>Qty: ${qty}</small><br>
+              <input type='number' name='item_${id}_cases' placeholder='Cases' min='0' value='0' onchange='updateTotal()'>
+              <input type='hidden' name='item_${id}_title' value='${title}'>
+              <input type='hidden' name='item_${id}_price' value='${wholesale}'>
+            </div>
+          `;
+        }
+        html += '</div></details>';
+      }
       document.getElementById('productList').innerHTML = html;
     }
 
     document.getElementById('wholesaleForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       document.getElementById('loader').style.display = 'block';
-
       const formData = new FormData(this);
       const data = new URLSearchParams();
       for (const [key, value] of formData.entries()) {
         if (value !== '') data.append(key, value);
       }
-
       const res = await fetch(endpoint, {
         method: 'POST',
         body: data
       });
-
       document.getElementById('loader').style.display = 'none';
       if (res.ok) alert('✅ Order submitted!');
       else alert('❌ Something went wrong. Please try again.');
