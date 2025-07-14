@@ -43,7 +43,7 @@
     }
 
     .logo-title img {
-      height: 80px;
+      height: 70px;
     }
 
     .logo-title h1 {
@@ -79,20 +79,18 @@
     }
 
     .loading-container {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
       display: none;
-      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
     }
 
     .loading-spinner {
       border: 5px solid #f3f3f3;
       border-top: 5px solid var(--primary);
       border-radius: 50%;
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
       animation: spin 1s linear infinite;
     }
 
@@ -105,13 +103,11 @@
         flex-direction: column;
         align-items: flex-start;
       }
-
       .submit-top {
         width: 100%;
         justify-content: space-between;
         margin-top: 10px;
       }
-
       .order-total-header {
         text-align: left;
       }
@@ -198,6 +194,25 @@
     input.error-border {
       border-color: red;
     }
+
+    .form-actions {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .form-actions button {
+      background: var(--primary);
+      color: white;
+      padding: 14px 30px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .form-actions button:hover {
+      background: #0066cc;
+    }
   </style>
 </head>
 <body>
@@ -208,11 +223,10 @@
         <h1>Wholesale Orders West</h1>
       </div>
       <div class="submit-top">
-        <button id="submitOrder" type="submit">Submit Order</button>
+        <button type="submit">Submit Order</button>
         <div class="order-total-header">Total: $0.00<br><small>Includes 5% GST</small></div>
       </div>
     </header>
-
     <main>
       <div class="buyer-info">
         <label for="name">Full Name</label>
@@ -224,14 +238,16 @@
         <label for="email">Email Address</label>
         <input id="email" name="email" type="email" required>
       </div>
-
       <div id="productList"></div>
+      <div class="form-actions">
+        <button type="submit">Submit Order</button>
+      </div>
     </main>
-
-    <div class="loading-container" id="loadingSpinner">
-      <div class="loading-spinner"></div>
-    </div>
   </form>
+
+  <div class="loading-container" id="loadingSpinner">
+    <div class="loading-spinner"></div>
+  </div>
 
   <script>
     function validateQty(input, maxQty) {
@@ -305,7 +321,7 @@
     document.getElementById('wholesaleForm').addEventListener('submit', async function (e) {
       e.preventDefault();
 
-      const submitBtn = document.getElementById("submitOrder");
+      const submitBtn = document.querySelector("button[type='submit']");
       const spinner = document.getElementById("loadingSpinner");
 
       submitBtn.disabled = true;
@@ -325,6 +341,15 @@
 
         if (res.ok) {
           alert("✅ Order submitted!");
+
+          // Reset form
+          document.getElementById('wholesaleForm').reset();
+          document.querySelectorAll("input[name^='item_'][name$='_cases']").forEach(input => {
+            input.value = 0;
+            input.classList.remove('error-border');
+          });
+          document.querySelectorAll(".error-msg").forEach(div => div.style.display = 'none');
+          document.querySelector('.order-total-header').innerHTML = `Total: $0.00<br><small>Includes 5% GST</small>`;
         } else {
           alert("❌ Something went wrong. Please try again.");
         }
