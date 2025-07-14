@@ -43,7 +43,7 @@
     }
 
     .logo-title img {
-      height: 48px;
+      height: 64px;
     }
 
     .logo-title h1 {
@@ -76,6 +76,10 @@
       font-weight: 600;
       font-size: 14px;
       text-align: right;
+    }
+
+    #loadingSpinner {
+      display: none;
     }
 
     @media (max-width: 600px) {
@@ -205,6 +209,9 @@
       <div class="submit-top">
         <button type="submit">Submit Order</button>
         <div class="order-total-header">Total: $0.00<br><small>Includes 5% GST</small></div>
+        <div id="loadingSpinner">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif" alt="Loading..." style="height: 24px;">
+        </div>
       </div>
     </header>
     <main>
@@ -264,7 +271,7 @@
               <img src="${img}" alt="${title}" />
               <div><strong>${title}</strong></div>
               <div>$${wholesale} / ${pack}</div>
-              <div>Available: ${qty}</div>
+              <div>In Stock: ${qty}</div>
               <input type="number" name="item_${id}_cases" min="0" value="0" onchange="validateQty(this, ${qty}); updateTotal()">
               <div class="error-msg" style="color:red; font-size:13px; display:none;">Not enough stock available</div>
               <input type="hidden" name="item_${id}_title" value="${title}">
@@ -296,17 +303,36 @@
 
     document.getElementById('wholesaleForm').addEventListener('submit', async function (e) {
       e.preventDefault();
+
+      const submitBtn = document.querySelector("button[type='submit']");
+      const spinner = document.getElementById("loadingSpinner");
+
+      submitBtn.disabled = true;
+      spinner.style.display = 'inline-block';
+
       const formData = new FormData(this);
       const data = new URLSearchParams();
       for (const [key, val] of formData.entries()) {
         if (val !== '') data.append(key, val);
       }
-      const res = await fetch("https://script.google.com/macros/s/AKfycbzlClfhUfPWSc7UibV7wc9DvtLMScZLRWRcQwB0kdZ10CAO9VySH8Q4-OGa4GtsUCx4/exec", {
-        method: "POST",
-        body: data
-      });
-      if (res.ok) alert("✅ Order submitted!");
-      else alert("❌ Something went wrong.");
+
+      try {
+        const res = await fetch("https://script.google.com/macros/s/AKfycbzlClfhUfPWSc7UibV7wc9DvtLMScZLRWRcQwB0kdZ10CAO9VySH8Q4-OGa4GtsUCx4/exec", {
+          method: "POST",
+          body: data
+        });
+
+        if (res.ok) {
+          alert("✅ Order submitted!");
+        } else {
+          alert("❌ Something went wrong. Please try again.");
+        }
+      } catch (error) {
+        alert("⚠️ Submission failed. Check your connection and try again.");
+      } finally {
+        submitBtn.disabled = false;
+        spinner.style.display = 'none';
+      }
     });
 
     loadInventory();
