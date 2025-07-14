@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Wholesale Orders West</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
@@ -43,7 +43,7 @@
     }
 
     .logo-title img {
-      height: 64px;
+      height: 70px;
     }
 
     .logo-title h1 {
@@ -78,8 +78,24 @@
       text-align: right;
     }
 
-    #loadingSpinner {
+    .loading-container {
       display: none;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .loading-spinner {
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid var(--primary);
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
 
     @media (max-width: 600px) {
@@ -209,9 +225,6 @@
       <div class="submit-top">
         <button type="submit">Submit Order</button>
         <div class="order-total-header">Total: $0.00<br><small>Includes 5% GST</small></div>
-        <div id="loadingSpinner">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif" alt="Loading..." style="height: 24px;">
-        </div>
       </div>
     </header>
     <main>
@@ -231,6 +244,10 @@
       </div>
     </main>
   </form>
+
+  <div class="loading-container" id="loadingSpinner">
+    <div class="loading-spinner"></div>
+  </div>
 
   <script>
     function validateQty(input, maxQty) {
@@ -308,7 +325,7 @@
       const spinner = document.getElementById("loadingSpinner");
 
       submitBtn.disabled = true;
-      spinner.style.display = 'inline-block';
+      spinner.style.display = 'flex';
 
       const formData = new FormData(this);
       const data = new URLSearchParams();
