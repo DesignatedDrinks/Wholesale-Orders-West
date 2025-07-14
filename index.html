@@ -106,7 +106,7 @@
     </main>
   </form>
   <script>
-    // Replace inline CSV split with robust parser
+    // Function to parse CSV data with proper quote handling
     function parseCSV(text) {
       const rows = [];
       const lines = text.trim().split('\n');
@@ -128,7 +128,35 @@
       }
       return rows;
     }
+
+    // Load and render product list
+    const sheetUrl = 'https://docs.google.com/spreadsheets/d/177OyfU6g2jc8FqdPyzk5tw-tcEwlUvsVgPdr80rDGVU/export?format=csv';
+
+    fetch(sheetUrl)
+      .then(response => response.text())
+      .then(csv => {
+        const data = parseCSV(csv);
+        const container = document.getElementById('productList');
+        data.forEach((row, i) => {
+          const [title, size, retail, wholesale, image, packPrice, status, qty] = row;
+          if (status.trim().toLowerCase() !== 'yes') return;
+
+          const card = document.createElement('div');
+          card.style = 'background:#fff;margin-bottom:20px;padding:16px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.05);display:flex;gap:16px;align-items:center;';
+
+          card.innerHTML = `
+            <img src="${image}" alt="${title}" style="width:80px;height:80px;object-fit:contain;border-radius:8px;background:#f4f4f4;">
+            <div style="flex:1">
+              <div style="font-weight:bold;font-size:18px;">${title}</div>
+              <div style="margin:4px 0;color:#555;">${size}</div>
+              <div style="font-size:14px;color:#888;">24-Pack Price: $${packPrice}</div>
+            </div>
+            <input type="number" min="0" placeholder="Qty" style="width:60px;font-size:16px;padding:6px;border-radius:6px;border:1px solid #ccc" data-title="${title}" class="qty-input">
+          `;
+
+          container.appendChild(card);
+        });
+      });
   </script>
-  <script src="wholesale-west.js"></script>
 </body>
 </html>
