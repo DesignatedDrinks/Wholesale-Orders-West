@@ -105,6 +105,30 @@
       </div>
     </main>
   </form>
-  <script src="https://designateddrinks.github.io/designated-shared/wholesale-west.js"></script>
+  <script>
+    // Replace inline CSV split with robust parser
+    function parseCSV(text) {
+      const rows = [];
+      const lines = text.trim().split('\n');
+      for (let i = 1; i < lines.length; i++) {
+        const row = [];
+        let insideQuotes = false, value = '', line = lines[i];
+        for (let j = 0; j < line.length; j++) {
+          const char = line[j];
+          if (char === '"') insideQuotes = !insideQuotes;
+          else if (char === ',' && !insideQuotes) {
+            row.push(value);
+            value = '';
+          } else {
+            value += char;
+          }
+        }
+        row.push(value);
+        rows.push(row);
+      }
+      return rows;
+    }
+  </script>
+  <script src="wholesale-west.js"></script>
 </body>
 </html>
