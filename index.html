@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Wholesale Orders West</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
@@ -27,38 +27,70 @@
       position: sticky;
       top: 0;
       z-index: 1000;
-      padding: 20px;
+      padding: 12px 16px;
       display: flex;
-      justify-content: space-between;
+      flex-wrap: wrap;
       align-items: center;
+      justify-content: space-between;
       box-shadow: 0 2px 8px var(--shadow);
     }
 
-    header h1 {
-      font-size: 24px;
-      margin: 0;
-      color: var(--text);
+    .logo-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
     }
 
-    .order-total-header {
-      text-align: right;
-      font-weight: 600;
-      font-size: 16px;
+    .logo-title img {
+      height: 32px;
+    }
+
+    .logo-title h1 {
+      font-size: 20px;
+      margin: 0;
+    }
+
+    .submit-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: auto;
     }
 
     .submit-top button {
       background: var(--primary);
       color: white;
-      padding: 10px 18px;
+      padding: 10px 16px;
       font-size: 15px;
       border: none;
       border-radius: 10px;
       cursor: pointer;
-      margin-right: 15px;
     }
 
     .submit-top button:hover {
       background: #0066cc;
+    }
+
+    .order-total-header {
+      font-weight: 600;
+      font-size: 14px;
+      text-align: right;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .submit-top {
+        width: 100%;
+        justify-content: space-between;
+        margin-top: 10px;
+      }
+      .order-total-header {
+        text-align: left;
+      }
     }
 
     main {
@@ -161,7 +193,10 @@
 <body>
   <form id="wholesaleForm">
     <header>
-      <h1>Wholesale Orders West</h1>
+      <div class="logo-title">
+        <img src="https://www.designateddrinks.ca/cdn/shop/files/DDWebLogo_150x.png?v=1648823188" alt="Designated Drinks Logo">
+        <h1>Wholesale Orders West</h1>
+      </div>
       <div class="submit-top">
         <button type="submit">Submit Order</button>
         <div class="order-total-header">Total: $0.00<br><small>Includes 5% GST</small></div>
