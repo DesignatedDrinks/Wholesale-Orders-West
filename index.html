@@ -15,7 +15,7 @@
     }
 
     body {
-      font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: 'Montserrat', sans-serif;
       background: var(--bg);
       margin: 0;
       padding: 0;
@@ -43,7 +43,7 @@
     }
 
     .logo-title img {
-      height: 70px;
+      height: 80px;
     }
 
     .logo-title h1 {
@@ -79,18 +79,20 @@
     }
 
     .loading-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       display: none;
-      justify-content: center;
-      align-items: center;
-      margin-top: 20px;
+      z-index: 9999;
     }
 
     .loading-spinner {
       border: 5px solid #f3f3f3;
       border-top: 5px solid var(--primary);
       border-radius: 50%;
-      width: 36px;
-      height: 36px;
+      width: 40px;
+      height: 40px;
       animation: spin 1s linear infinite;
     }
 
@@ -103,11 +105,13 @@
         flex-direction: column;
         align-items: flex-start;
       }
+
       .submit-top {
         width: 100%;
         justify-content: space-between;
         margin-top: 10px;
       }
+
       .order-total-header {
         text-align: left;
       }
@@ -194,25 +198,6 @@
     input.error-border {
       border-color: red;
     }
-
-    .form-actions {
-      text-align: center;
-      margin-top: 40px;
-    }
-
-    .form-actions button {
-      background: var(--primary);
-      color: white;
-      padding: 14px 30px;
-      font-size: 18px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-
-    .form-actions button:hover {
-      background: #0066cc;
-    }
   </style>
 </head>
 <body>
@@ -223,10 +208,11 @@
         <h1>Wholesale Orders West</h1>
       </div>
       <div class="submit-top">
-        <button type="submit">Submit Order</button>
+        <button id="submitOrder" type="submit">Submit Order</button>
         <div class="order-total-header">Total: $0.00<br><small>Includes 5% GST</small></div>
       </div>
     </header>
+
     <main>
       <div class="buyer-info">
         <label for="name">Full Name</label>
@@ -238,16 +224,14 @@
         <label for="email">Email Address</label>
         <input id="email" name="email" type="email" required>
       </div>
-      <div id="productList"></div>
-      <div class="form-actions">
-        <button type="submit">Submit Order</button>
-      </div>
-    </main>
-  </form>
 
-  <div class="loading-container" id="loadingSpinner">
-    <div class="loading-spinner"></div>
-  </div>
+      <div id="productList"></div>
+    </main>
+
+    <div class="loading-container" id="loadingSpinner">
+      <div class="loading-spinner"></div>
+    </div>
+  </form>
 
   <script>
     function validateQty(input, maxQty) {
@@ -321,7 +305,7 @@
     document.getElementById('wholesaleForm').addEventListener('submit', async function (e) {
       e.preventDefault();
 
-      const submitBtn = document.querySelector("button[type='submit']");
+      const submitBtn = document.getElementById("submitOrder");
       const spinner = document.getElementById("loadingSpinner");
 
       submitBtn.disabled = true;
