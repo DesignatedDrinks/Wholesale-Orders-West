@@ -78,6 +78,37 @@
       0% { transform: translate(-50%, -50%) rotate(0deg); }
       100% { transform: translate(-50%, -50%) rotate(360deg); }
     }
+    .product-card {
+      margin-bottom: 12px;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+    .product-header {
+      background: #001f3f;
+      color: white;
+      padding: 12px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .product-body {
+      display: none;
+      padding: 12px;
+    }
+    .product-card.open .product-body {
+      display: block;
+    }
+    .product-body img {
+      max-width: 100px;
+      margin-bottom: 10px;
+    }
+    .product-qty input {
+      width: 60px;
+      padding: 5px;
+      font-size: 16px;
+      margin-left: 5px;
+    }
   </style>
 </head>
 <body>
@@ -106,7 +137,6 @@
     </main>
   </form>
   <script>
-    // Function to parse CSV data with proper quote handling
     function parseCSV(text) {
       const rows = [];
       const lines = text.trim().split('\n');
@@ -129,34 +159,34 @@
       return rows;
     }
 
-    // Load and render product list
-    const sheetUrl = 'https://docs.google.com/spreadsheets/d/177OyfU6g2jc8FqdPyzk5tw-tcEwlUvsVgPdr80rDGVU/export?format=csv';
-
-    fetch(sheetUrl)
-      .then(response => response.text())
-      .then(csv => {
-        const data = parseCSV(csv);
-        const container = document.getElementById('productList');
-        data.forEach((row, i) => {
-          const [title, size, retail, wholesale, image, packPrice, status, qty] = row;
-          if (status.trim().toLowerCase() !== 'yes') return;
-
-          const card = document.createElement('div');
-          card.style = 'background:#fff;margin-bottom:20px;padding:16px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.05);display:flex;gap:16px;align-items:center;';
-
-          card.innerHTML = `
-            <img src="${image}" alt="${title}" style="width:80px;height:80px;object-fit:contain;border-radius:8px;background:#f4f4f4;">
-            <div style="flex:1">
-              <div style="font-weight:bold;font-size:18px;">${title}</div>
-              <div style="margin:4px 0;color:#555;">${size}</div>
-              <div style="font-size:14px;color:#888;">24-Pack Price: $${packPrice}</div>
+    function createProductCard(product) {
+      const [title, packSize, retail, wholesale, imageUrl, casePrice, status, qty] = product;
+      if (status !== 'yes') return '';
+      const id = title.replace(/\s+/g, '_');
+      return `
+        <div class="product-card" onclick="this.classList.toggle('open')">
+          <div class="product-header">${title}</div>
+          <div class="product-body">
+            <img src="${imageUrl}" alt="${title}">
+            <p>Wholesale: $${wholesale}<br>Available: ${qty}<br>Pack Size: ${packSize}</p>
+            <div class="product-qty">
+              <label for="${id}_cases">Cases:</label>
+              <input type="number" name="${id}_cases" min="0">
             </div>
-            <input type="number" min="0" placeholder="Qty" style="width:60px;font-size:16px;padding:6px;border-radius:6px;border:1px solid #ccc" data-title="${title}" class="qty-input">
-          `;
+          </div>
+        </div>
+      `;
+    }
 
-          container.appendChild(card);
-        });
-      });
+    async function loadInventory() {
+      const res = await fetch('https://docs.google.com/spreadsheets/d/177OyfU6g2jc8FqdPyzk5tw-tcEwlUvsVgPdr80rDGVU/export?format=csv');
+      const text = await res.text();
+      const rows = parseCSV(text);
+      const html = rows.map(createProductCard).join('');
+      document.getElementById('productList').innerHTML = html;
+    }
+
+    loadInventory();
   </script>
 </body>
 </html>
