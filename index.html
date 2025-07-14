@@ -78,31 +78,33 @@
       0% { transform: translate(-50%, -50%) rotate(0deg); }
       100% { transform: translate(-50%, -50%) rotate(360deg); }
     }
-    .product-card {
-      margin-bottom: 12px;
+    .brewery-group {
+      margin-bottom: 20px;
       background: white;
       border-radius: 8px;
       overflow: hidden;
       box-shadow: 0 1px 4px rgba(0,0,0,0.05);
     }
-    .product-header {
+    .brewery-header {
       background: #001f3f;
       color: white;
       padding: 12px;
       font-weight: bold;
       cursor: pointer;
     }
-    .product-body {
+    .brewery-body { display: none; padding: 12px; }
+    .brewery-group.open .brewery-body { display: block; }
+    .beer-item { cursor: pointer; margin-bottom: 10px; }
+    .beer-popup {
       display: none;
+      background: #f9f9f9;
       padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
     }
-    .product-card.open .product-body {
-      display: block;
-    }
-    .product-body img {
-      max-width: 100px;
-      margin-bottom: 10px;
-    }
+    .beer-popup.open { display: block; }
+    .beer-popup img { max-width: 100px; }
     .product-qty input {
       width: 60px;
       padding: 5px;
@@ -137,9 +139,12 @@
     </main>
   </form>
   <script>
+    const endpoint = "https://script.google.com/macros/s/AKfycbzlClfhUfPWSc7UibV7wc9DvtLMScZLRWRcQwB0kdZ10CAO9VySH8Q4-OGa4GtsUCx4/exec";
+
     function parseCSV(text) {
       const rows = [];
       const lines = text.trim().split('\n');
+      const headers = lines[0].split(',');
       for (let i = 1; i < lines.length; i++) {
         const row = [];
         let insideQuotes = false, value = '', line = lines[i];
@@ -159,21 +164,39 @@
       return rows;
     }
 
-    function createProductCard(product) {
-      const [title, packSize, retail, wholesale, imageUrl, casePrice, status, qty] = product;
-      if (status !== 'yes') return '';
-      const id = title.replace(/\s+/g, '_');
-      return `
-        <div class="product-card" onclick="this.classList.toggle('open')">
-          <div class="product-header">${title}</div>
-          <div class="product-body">
-            <img src="${imageUrl}" alt="${title}">
-            <p>Wholesale: $${wholesale}<br>Available: ${qty}<br>Pack Size: ${packSize}</p>
-            <div class="product-qty">
-              <label for="${id}_cases">Cases:</label>
-              <input type="number" name="${id}_cases" min="0">
+    function groupByBrewery(products) {
+      const groups = {};
+      for (const row of products) {
+        const [title] = row;
+        const brewery = title.split(' (')[0];
+        if (!groups[brewery]) groups[brewery] = [];
+        groups[brewery].push(row);
+      }
+      return groups;
+    }
+
+    function createBrewerySection(brewery, beers) {
+      const beerItems = beers.map((product, index) => {
+        const [title, packSize, retail, wholesale, imageUrl, casePrice, status, qty] = product;
+        if (status !== 'yes') return '';
+        const id = `${brewery.replace(/\s+/g, '_')}_${index}`;
+        return `
+          <div class="beer-item" onclick="document.getElementById('${id}').classList.toggle('open')">
+            <strong>${title}</strong>
+            <div id="${id}" class="beer-popup">
+              <img src="${imageUrl}" alt="${title}">
+              <p>Wholesale: $${wholesale}<br>Available: ${qty}<br>Pack Size: ${packSize}</p>
+              <label>Cases: <input type="number" name="item_${id}_cases" min="0"></label>
+              <input type="hidden" name="item_${id}_title" value="${title}">
             </div>
           </div>
+        `;
+      }).join('');
+
+      return `
+        <div class="brewery-group" onclick="this.classList.toggle('open')">
+          <div class="brewery-header">${brewery}</div>
+          <div class="brewery-body">${beerItems}</div>
         </div>
       `;
     }
@@ -182,9 +205,30 @@
       const res = await fetch('https://docs.google.com/spreadsheets/d/177OyfU6g2jc8FqdPyzk5tw-tcEwlUvsVgPdr80rDGVU/export?format=csv');
       const text = await res.text();
       const rows = parseCSV(text);
-      const html = rows.map(createProductCard).join('');
+      const grouped = groupByBrewery(rows);
+      const html = Object.entries(grouped).map(([brewery, beers]) => createBrewerySection(brewery, beers)).join('');
       document.getElementById('productList').innerHTML = html;
     }
+
+    document.getElementById('wholesaleForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      document.getElementById('loader').style.display = 'block';
+
+      const formData = new FormData(this);
+      const data = new URLSearchParams();
+      for (const [key, value] of formData.entries()) {
+        if (value !== '') data.append(key, value);
+      }
+
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        body: data
+      });
+
+      document.getElementById('loader').style.display = 'none';
+      if (res.ok) alert('✅ Order submitted!');
+      else alert('❌ Something went wrong. Please try again.');
+    });
 
     loadInventory();
   </script>
