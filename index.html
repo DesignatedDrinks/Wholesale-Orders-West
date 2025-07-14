@@ -88,7 +88,7 @@
       <h1>Wholesale Orders West</h1>
       <div class="submit-top">
         <button type="submit">Submit Order</button>
-        <span class="order-total-header">Total: $0.00</span>
+        <span class="order-total-header">Total: $0.00<br><span class='gst-line' style='font-weight:normal; font-size:14px;'>Includes 5% GST</span></span>
       </div>
     </header>
 
@@ -112,13 +112,13 @@
 
   <script>
     (async () => {
-      const sheetUrl = 'https://docs.google.com/spreadsheets/d/1zwIBeOKqAWtAP-I-UMsV6zONEytlEys3903thSrMUWo/export?format=csv';
+      const sheetUrl = 'https://docs.google.com/spreadsheets/d/177OyfU6g2jc8FqdPyzk5tw-tcEwlUvsVgPdr80rDGVU/export?format=csv';
       const scriptURL = 'https://script.google.com/macros/s/AKfycbzlClfhUfPWSc7UibV7wc9DvtLMScZLRWRcQwB0kdZ10CAO9VySH8Q4-OGa4GtsUCx4/exec';
       const text = await fetch(sheetUrl).then(r => r.text());
       const rows = text.trim().split('\n').slice(1).map(r => r.split(','));
       const grouped = {};
 
-      rows.forEach(([title, canSize, , , imageUrl, casePrice, status]) => {
+      rows.forEach(([title, packSize, retailPrice, wholesalePrice, imageUrl, casePrice, status, quantity]) => {
         if (!title || status.trim().toLowerCase() !== 'yes') return;
         const vendorMatch = title.match(/^(.+?)\s\(/);
         const vendor = vendorMatch ? vendorMatch[1] : 'Other';
@@ -129,7 +129,10 @@
         if (!grouped[vendor]) grouped[vendor] = [];
         grouped[vendor].push({
           title: cleanTitle,
-          canSize,
+          quantity: quantity,
+          packSize,
+          retailPrice: parseFloat(retailPrice),
+          wholesalePrice: parseFloat(wholesalePrice),
           casePrice: parseFloat(casePrice),
           imageUrl
         });
@@ -155,8 +158,10 @@
             <img src="${p.imageUrl}" alt="${p.title}">
             <div class="product-details">
               <div class="product-title">${p.title}</div>
-              <div class="can-size">${p.canSize}</div>
+              <div class="can-size">${p.packSize}</div>
+              <div class="wholesale-price">Wholesale Price: $${p.wholesalePrice.toFixed(2)}</div>
               <div class="wholesale-price">24-Pack Price: $${p.casePrice.toFixed(2)}</div>
+              <div class="can-size">In Stock: ${p.quantity}</div>`
             </div>
             <div class="qty-inputs">
               <label>Cases</label>
@@ -179,8 +184,10 @@
         document.querySelectorAll('.qty-control input').forEach(input => {
           total += (parseInt(input.value) || 0) * parseFloat(input.dataset.price);
         });
+        const gst = total * 0.05;
+        const totalWithGST = total;
         document.querySelectorAll('.order-total-header').forEach(el => {
-          el.textContent = `Total: $${total.toFixed(2)}`;
+          el.innerHTML = `Total: $${totalWithGST.toFixed(2)}<br><span class='gst-line' style='font-weight:normal; font-size:14px;'>Includes 5% GST: $${gst.toFixed(2)}</span>`;
         });
       }
 
