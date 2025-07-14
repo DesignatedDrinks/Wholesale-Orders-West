@@ -43,7 +43,7 @@
     }
 
     .logo-title img {
-      height: 32px;
+      height: 48px;
     }
 
     .logo-title h1 {
@@ -264,7 +264,7 @@
               <img src="${img}" alt="${title}" />
               <div><strong>${title}</strong></div>
               <div>$${wholesale} / ${pack}</div>
-              <div>Qty: ${qty}</div>
+              <div>Available: ${qty}</div>
               <input type="number" name="item_${id}_cases" min="0" value="0" onchange="validateQty(this, ${qty}); updateTotal()">
               <div class="error-msg" style="color:red; font-size:13px; display:none;">Not enough stock available</div>
               <input type="hidden" name="item_${id}_title" value="${title}">
