@@ -22,202 +22,84 @@
     }
     header {
       background: white;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      padding: 12px 16px;
+      padding: 20px;
+      box-shadow: 0 2px 4px var(--shadow);
       display: flex;
-      flex-wrap: wrap;
-      align-items: center;
       justify-content: space-between;
-      box-shadow: 0 2px 8px var(--shadow);
-    }
-    .logo-title {
-      display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 8px;
+      flex-wrap: wrap;
     }
-    .logo-title img {
-      height: 70px;
-    }
-    .logo-title h1 {
-      font-size: 20px;
+    header h1 {
       margin: 0;
-    }
-    .submit-top {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-left: auto;
-    }
-    .submit-top button, .form-actions button {
-      background: var(--primary);
-      color: white;
-      padding: 10px 16px;
-      font-size: 15px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-    .submit-top button:hover, .form-actions button:hover {
-      background: #0066cc;
+      font-size: 24px;
     }
     .order-total-header {
-      font-weight: 600;
-      font-size: 14px;
+      font-size: 16px;
       text-align: right;
     }
-    .loading-container {
-      display: none;
-      position: fixed;
-      top: 40%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 9999;
-      background: rgba(255,255,255,0.9);
-      padding: 20px 30px;
-      border-radius: 14px;
-      box-shadow: 0 2px 8px var(--shadow);
-    }
-    .loading-spinner {
-      border: 5px solid #f3f3f3;
-      border-top: 5px solid var(--primary);
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-    @media (max-width: 600px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .submit-top {
-        width: 100%;
-        justify-content: space-between;
-        margin-top: 10px;
-      }
-      .order-total-header {
-        text-align: left;
-      }
-      .beer-card {
-        width: 45%;
-      }
-      .modal-content {
-        margin-top: 50px;
-        padding: 16px;
-        width: 85%;
-        max-width: 360px;
-        font-size: 15px;
-      }
-      .modal-content img {
-        max-width: 90%;
-        max-height: 120px;
-      }
-    }
     main {
-      max-width: 1200px;
+      max-width: 960px;
       margin: auto;
       padding: 20px;
     }
-    .buyer-info {
-      background: var(--card-bg);
-      border-radius: 14px;
-      padding: 20px;
-      box-shadow: 0 4px 12px var(--shadow);
-      margin-bottom: 30px;
-    }
     .buyer-info label {
       display: block;
-      margin-bottom: 6px;
-      font-weight: 600;
+      margin: 10px 0 5px;
     }
     .buyer-info input {
       width: 100%;
       padding: 10px;
+      border-radius: 6px;
       border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 16px;
-      margin-bottom: 16px;
-    }
-    details {
-      background: var(--card-bg);
-      border-radius: 12px;
-      margin-bottom: 12px;
-      padding: 10px 16px;
-      box-shadow: 0 2px 8px var(--shadow);
-    }
-    details summary {
-      font-weight: bold;
-      font-size: 18px;
-      cursor: pointer;
     }
     .beer-grid {
       display: flex;
       flex-wrap: wrap;
-      gap: 16px;
-      padding-top: 10px;
+      gap: 20px;
     }
     .beer-card {
-      background: var(--card-bg);
-      width: 180px;
+      background: white;
       padding: 12px;
-      border-radius: 12px;
-      text-align: center;
-      box-shadow: 0 1px 6px var(--shadow);
-      transition: transform 0.2s ease;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px var(--shadow);
+      width: calc(50% - 20px);
       cursor: pointer;
     }
-    .beer-card:hover {
-      transform: scale(1.02);
-    }
     .beer-card img {
-      max-width: 100px;
-      max-height: 100px;
+      width: 100%;
       height: auto;
-      width: auto;
-      margin: 0 auto 8px auto;
-      display: block;
+      max-height: 160px;
       object-fit: contain;
     }
-    .form-actions {
-      text-align: center;
-      margin-top: 40px;
+    @media (max-width: 600px) {
+      .beer-card {
+        width: 100%;
+      }
+      .modal-content {
+        width: 90%;
+        font-size: 15px;
+      }
+      .modal-content img {
+        max-height: 120px;
+      }
     }
     .modal-overlay {
-      display: none;
       position: fixed;
-      z-index: 9999;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.6);
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
     }
     .modal-content {
       background: white;
-      margin: 100px auto;
       padding: 24px;
-      width: 90%;
-      max-width: 400px;
       border-radius: 12px;
+      max-width: 400px;
+      width: 90%;
       text-align: center;
       position: relative;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    .modal-content img {
-      max-width: 100%;
-      max-height: 150px;
-      height: auto;
-      margin-bottom: 12px;
-      object-fit: contain;
     }
     .modal-close {
       position: absolute;
@@ -234,6 +116,155 @@
   </style>
 </head>
 <body>
+  <form id="wholesaleForm">
+    <header>
+      <h1>Wholesale Orders West</h1>
+      <div class="order-total-header">Total: $0.00<br><small>Includes 5% GST</small></div>
+    </header>
+    <main>
+      <div class="buyer-info">
+        <label for="name">Full Name</label>
+        <input id="name" name="fullName" type="text" required>
+        <label for="company">Company Name</label>
+        <input id="company" name="companyName" type="text" required>
+        <label for="email">Email Address</label>
+        <input id="email" name="email" type="email" required>
+      </div>
+      <div id="productList" class="beer-grid"></div>
+      <div class="form-actions" style="text-align:center; margin-top: 20px;">
+        <button type="submit">Submit Order</button>
+      </div>
+    </main>
+  </form>
+
+  <div class="modal-overlay" id="productModal">
+    <div class="modal-content" id="modalContent"></div>
+  </div>
+
   <script>
+    async function loadInventory() {
+      const res = await fetch('https://docs.google.com/spreadsheets/d/177OyfU6g2jc8FqdPyzk5tw-tcEwlUvsVgPdr80rDGVU/export?format=csv');
+      const text = await res.text();
+      const rows = text.trim().split('\n').map(row => row.split(','));
+      const headers = rows.shift();
+      const grouped = {};
+      for (const row of rows) {
+        const [title, pack, retail, wholesale, img, casePrice, status, qty] = row;
+        if (status !== 'yes') continue;
+        const brewery = title.split(' (')[0];
+        if (!grouped[brewery]) grouped[brewery] = [];
+        grouped[brewery].push({ title, pack, wholesale, img, qty });
+      }
+      let html = '';
+      for (const brewery in grouped) {
+        html += `<details><summary>${brewery}</summary>`;
+        for (const item of grouped[brewery]) {
+          const id = item.title.replace(/\W+/g, '_');
+          html += `
+            <div class="beer-card" onclick="openModal('${id}', \`${item.title}\`, '${item.img}', '${item.pack}', '${item.wholesale}', ${item.qty})">
+              <img src="${item.img}" alt="${item.title}" />
+              <div><strong>${item.title}</strong></div>
+              <div>$${item.wholesale} / ${item.pack}</div>
+              <div>In Stock: ${item.qty}</div>
+              <input type="hidden" name="item_${id}_title" value="${item.title}">
+              <input type="hidden" name="item_${id}_price" value="${item.wholesale}">
+              <input type="number" name="item_${id}_cases" value="0" style="display:none">
+            </div>`;
+        }
+        html += '</details>';
+      }
+      document.getElementById('productList').innerHTML = html;
+    }
+
+    function openModal(id, title, img, pack, wholesale, qty) {
+      const inputVal = document.querySelector(`[name='item_${id}_cases']`).value || 0;
+      document.getElementById('modalContent').innerHTML = `
+        <span class='modal-close' onclick='closeModal()'>&times;</span>
+        <img src='${img}' alt='${title}' />
+        <h2>${title}</h2>
+        <p><strong>Pack:</strong> ${pack}</p>
+        <p><strong>Wholesale Price:</strong> $${wholesale}</p>
+        <p><strong>Available:</strong> ${qty}</p>
+        <input type='number' id='modalQtyInput' min='0' max='${qty}' value='${inputVal}' oninput="validateQuantity(this, ${qty})" />
+        <div class='error-message' id='error-msg'></div>
+        <br><br>
+        <button onclick='saveModalQty("${id}")'>Add to Order</button>`;
+      document.getElementById('productModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('productModal').style.display = 'none';
+    }
+
+    function saveModalQty(id) {
+      const qty = document.getElementById('modalQtyInput').value;
+      document.querySelector(`[name='item_${id}_cases']`).value = qty;
+      updateTotal();
+      closeModal();
+    }
+
+    function updateTotal() {
+      let subtotal = 0;
+      const inputs = document.querySelectorAll("input[name^='item_'][name$='_cases']");
+      inputs.forEach(input => {
+        const qty = parseInt(input.value || '0');
+        const base = input.name.replace('_cases', '');
+        const price = parseFloat(document.querySelector(`[name='${base}_price']`).value || '0');
+        subtotal += qty * price;
+      });
+      const gst = subtotal * 0.05;
+      const total = subtotal + gst;
+      document.querySelector('.order-total-header').innerHTML = `Total: $${total.toFixed(2)}<br><small>Includes 5% GST</small>`;
+    }
+
     function validateQuantity(input, maxQty) {
-      const errorEl = document
+      const errorEl = document.getElementById('error-msg');
+      const qty = parseInt(input.value, 10);
+      if (qty > maxQty) {
+        errorEl.textContent = `You can only order up to ${maxQty} of this item.`;
+      } else {
+        errorEl.textContent = '';
+      }
+    }
+
+    document.getElementById('wholesaleForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const submitBtn = document.querySelector("button[type='submit']");
+      submitBtn.disabled = true;
+      const formData = new FormData(this);
+      const data = new URLSearchParams();
+      for (const [key, val] of formData.entries()) {
+        if (val !== '') data.append(key, val);
+      }
+      try {
+        const res = await fetch("https://script.google.com/macros/s/AKfycbzlClfhUfPWSc7UibV7wc9DvtLMScZLRWRcQwB0kdZ10CAO9VySH8Q4-OGa4GtsUCx4/exec", {
+          method: "POST",
+          body: data
+        });
+        if (res.ok) {
+          alert("✅ Order submitted!");
+          document.getElementById('wholesaleForm').reset();
+          document.getElementById('productList').innerHTML = '';
+          loadInventory();
+          updateTotal();
+        } else {
+          alert("❌ Something went wrong. Please try again.");
+        }
+      } catch (error) {
+        alert("⚠️ Submission failed. Check your connection and try again.");
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
+    window.onclick = function (event) {
+      const modal = document.getElementById('productModal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    };
+
+    loadInventory();
+  </script>
+</body>
+</html>
