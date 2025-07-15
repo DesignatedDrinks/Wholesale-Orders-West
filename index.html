@@ -13,7 +13,6 @@
       --card-bg: #fff;
       --shadow: rgba(0, 0, 0, 0.06);
     }
-
     body {
       font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: var(--bg);
@@ -21,7 +20,6 @@
       padding: 0;
       color: var(--text);
     }
-
     header {
       background: white;
       position: sticky;
@@ -34,30 +32,25 @@
       justify-content: space-between;
       box-shadow: 0 2px 8px var(--shadow);
     }
-
     .logo-title {
       display: flex;
       align-items: center;
       gap: 12px;
       margin-bottom: 8px;
     }
-
     .logo-title img {
       height: 70px;
     }
-
     .logo-title h1 {
       font-size: 20px;
       margin: 0;
     }
-
     .submit-top {
       display: flex;
       align-items: center;
       gap: 12px;
       margin-left: auto;
     }
-
     .submit-top button {
       background: var(--primary);
       color: white;
@@ -67,17 +60,14 @@
       border-radius: 10px;
       cursor: pointer;
     }
-
     .submit-top button:hover {
       background: #0066cc;
     }
-
     .order-total-header {
       font-weight: 600;
       font-size: 14px;
       text-align: right;
     }
-
     .loading-container {
       display: none;
       position: fixed;
@@ -90,7 +80,6 @@
       border-radius: 14px;
       box-shadow: 0 2px 8px var(--shadow);
     }
-
     .loading-spinner {
       border: 5px solid #f3f3f3;
       border-top: 5px solid var(--primary);
@@ -99,11 +88,9 @@
       height: 40px;
       animation: spin 1s linear infinite;
     }
-
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
-
     @media (max-width: 600px) {
       header {
         flex-direction: column;
@@ -118,13 +105,11 @@
         text-align: left;
       }
     }
-
     main {
       max-width: 1200px;
       margin: auto;
       padding: 20px;
     }
-
     .buyer-info {
       background: var(--card-bg);
       border-radius: 14px;
@@ -132,13 +117,11 @@
       box-shadow: 0 4px 12px var(--shadow);
       margin-bottom: 30px;
     }
-
     .buyer-info label {
       display: block;
       margin-bottom: 6px;
       font-weight: 600;
     }
-
     .buyer-info input {
       width: 100%;
       padding: 10px;
@@ -147,7 +130,6 @@
       font-size: 16px;
       margin-bottom: 16px;
     }
-
     details {
       background: var(--card-bg);
       border-radius: 12px;
@@ -155,20 +137,17 @@
       padding: 10px 16px;
       box-shadow: 0 2px 8px var(--shadow);
     }
-
     details summary {
       font-weight: bold;
       font-size: 18px;
       cursor: pointer;
     }
-
     .beer-grid {
       display: flex;
       flex-wrap: wrap;
       gap: 16px;
       padding-top: 10px;
     }
-
     .beer-card {
       background: var(--card-bg);
       width: 180px;
@@ -178,17 +157,14 @@
       box-shadow: 0 1px 6px var(--shadow);
       transition: transform 0.2s ease;
     }
-
     .beer-card:hover {
       transform: scale(1.02);
     }
-
     .beer-card img {
       max-width: 100px;
       margin: 0 auto 8px auto;
       display: block;
     }
-
     .beer-card input[type="number"] {
       width: 60px;
       padding: 6px;
@@ -196,16 +172,13 @@
       border-radius: 6px;
       margin-top: 6px;
     }
-
     input.error-border {
       border-color: red;
     }
-
     .form-actions {
       text-align: center;
       margin-top: 40px;
     }
-
     .form-actions button {
       background: var(--primary);
       color: white;
@@ -215,7 +188,6 @@
       border-radius: 10px;
       cursor: pointer;
     }
-
     .form-actions button:hover {
       background: #0066cc;
     }
@@ -282,12 +254,12 @@
 
       let html = '';
       for (const brewery in grouped) {
-        html += <details><summary>${brewery}</summary><div class="beer-grid">;
+        html += `<details><summary>${brewery}</summary><div class="beer-grid">`;
         for (const row of grouped[brewery]) {
           const [title, pack, retail, wholesale, img, casePrice, status, qty] = row;
           if (status !== 'yes') continue;
           const id = title.replace(/\W+/g, '_');
-          html += 
+          html += `
             <div class="beer-card">
               <img src="${img}" alt="${title}" />
               <div><strong>${title}</strong></div>
@@ -297,8 +269,7 @@
               <div class="error-msg" style="color:red; font-size:13px; display:none;">Not enough stock available</div>
               <input type="hidden" name="item_${id}_title" value="${title}">
               <input type="hidden" name="item_${id}_price" value="${wholesale}">
-            </div>
-          ;
+            </div>`;
         }
         html += '</div></details>';
       }
@@ -312,14 +283,14 @@
       inputs.forEach(input => {
         const qty = parseInt(input.value || '0');
         const base = input.name.replace('_cases', '');
-        const price = parseFloat(document.querySelector([name='${base}_price']).value || '0');
+        const price = parseFloat(document.querySelector(`[name='${base}_price']`).value || '0');
         if (!input.classList.contains('error-border')) {
           subtotal += qty * price;
         }
       });
       const gst = subtotal * 0.05;
       const total = subtotal + gst;
-      document.querySelector('.order-total-header').innerHTML = Total: $${total.toFixed(2)}<br><small>Includes 5% GST</small>;
+      document.querySelector('.order-total-header').innerHTML = `Total: $${total.toFixed(2)}<br><small>Includes 5% GST</small>`;
     }
 
     document.getElementById('wholesaleForm').addEventListener('submit', async function (e) {
