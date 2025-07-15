@@ -64,11 +64,15 @@
       box-shadow: 0 2px 4px var(--shadow);
       width: calc(50% - 20px);
       cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .beer-card:hover {
+      transform: scale(1.02);
     }
     .beer-card img {
       width: 100%;
       height: auto;
-      max-height: 160px;
+      max-height: 140px;
       object-fit: contain;
     }
     @media (max-width: 600px) {
@@ -76,11 +80,25 @@
         width: 100%;
       }
       .modal-content {
-        width: 90%;
-        font-size: 15px;
+        width: 95%;
+        font-size: 14px;
+        padding: 16px;
       }
       .modal-content img {
-        max-height: 120px;
+        max-height: 100px;
+      }
+      .order-summary {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 12px;
+        box-shadow: 0 -2px 4px var(--shadow);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000;
       }
     }
     .modal-overlay {
@@ -91,6 +109,7 @@
       display: none;
       justify-content: center;
       align-items: center;
+      z-index: 999;
     }
     .modal-content {
       background: white;
@@ -98,8 +117,13 @@
       border-radius: 12px;
       max-width: 400px;
       width: 90%;
-      text-align: center;
+      text-align: left;
       position: relative;
+    }
+    .modal-content img {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 12px;
     }
     .modal-close {
       position: absolute;
@@ -113,9 +137,27 @@
       font-size: 14px;
       margin-top: 8px;
     }
+    .toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #323232;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      display: none;
+      z-index: 9999;
+    }
   </style>
 </head>
 <body>
+  <div class="toast" id="toast">Item added to cart</div>
+  <!-- Rest of HTML content remains here, including the form, modals, and scripts -->
+</body>
+</html>
+
   <form id="wholesaleForm">
     <header>
       <h1>Wholesale Orders West</h1>
