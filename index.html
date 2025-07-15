@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Wholesale Orders West</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary: #0A84FF;
@@ -13,268 +13,327 @@
       --card-bg: #fff;
       --shadow: rgba(0, 0, 0, 0.06);
     }
+
     body {
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: var(--bg);
       margin: 0;
       padding: 0;
       color: var(--text);
     }
+
     header {
       background: white;
-      padding: 20px;
-      box-shadow: 0 2px 4px var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      padding: 12px 16px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
       flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px var(--shadow);
     }
-    header h1 {
+
+    .logo-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .logo-title img {
+      height: 70px;
+    }
+
+    .logo-title h1 {
+      font-size: 20px;
       margin: 0;
-      font-size: 24px;
     }
+
+    .submit-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: auto;
+    }
+
+    .submit-top button {
+      background: var(--primary);
+      color: white;
+      padding: 10px 16px;
+      font-size: 15px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .submit-top button:hover {
+      background: #0066cc;
+    }
+
     .order-total-header {
-      font-size: 16px;
+      font-weight: 600;
+      font-size: 14px;
       text-align: right;
     }
+
+    .loading-container {
+      display: none;
+      position: fixed;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px 30px;
+      border-radius: 14px;
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+
+    .loading-spinner {
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid var(--primary);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .submit-top {
+        width: 100%;
+        justify-content: space-between;
+        margin-top: 10px;
+      }
+      .order-total-header {
+        text-align: left;
+      }
+    }
+
     main {
-      max-width: 960px;
+      max-width: 1200px;
       margin: auto;
       padding: 20px;
     }
+
+    .buyer-info {
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 4px 12px var(--shadow);
+      margin-bottom: 30px;
+    }
+
     .buyer-info label {
       display: block;
-      margin: 10px 0 5px;
+      margin-bottom: 6px;
+      font-weight: 600;
     }
+
     .buyer-info input {
       width: 100%;
       padding: 10px;
-      border-radius: 6px;
       border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-bottom: 16px;
     }
+
+    details {
+      background: var(--card-bg);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      padding: 10px 16px;
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+
+    details summary {
+      font-weight: bold;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
     .beer-grid {
       display: flex;
       flex-wrap: wrap;
-      gap: 20px;
+      gap: 16px;
+      padding-top: 10px;
     }
+
     .beer-card {
-      background: white;
+      background: var(--card-bg);
+      width: 180px;
       padding: 12px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px var(--shadow);
-      width: calc(50% - 20px);
-      cursor: pointer;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 1px 6px var(--shadow);
       transition: transform 0.2s ease;
+      cursor: pointer;
     }
+
     .beer-card:hover {
       transform: scale(1.02);
     }
+
     .beer-card img {
-      width: 100%;
-      height: auto;
-      max-height: 140px;
-      object-fit: contain;
+      max-width: 100px;
+      margin: 0 auto 8px auto;
+      display: block;
     }
-    @media (max-width: 600px) {
-      .beer-card {
-        width: 100%;
-      }
-      .modal-content {
-        width: 90%;
-        font-size: 14px;
-        padding: 16px;
-        border-radius: 10px;
-      }
-      .modal-content img {
-        max-height: 80px;
-        margin-bottom: 10px;
-      }
-      .modal-content h2 {
-        font-size: 16px;
-        line-height: 1.4;
-      }
-      .modal-details {
-        font-size: 14px;
-        margin-top: 8px;
-      }
-      .modal-footer {
-        display: flex;
-        gap: 8px;
-        margin-top: 12px;
-        align-items: center;
-      }
-      .order-summary {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: white;
-        padding: 12px;
-        box-shadow: 0 -2px 4px var(--shadow);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        z-index: 1000;
-      }
+
+    .beer-card input[type="number"] {
+      width: 60px;
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-top: 6px;
     }
+
+    input.error-border {
+      border-color: red;
+    }
+
+    .form-actions {
+      text-align: center;
+      margin-top: 40px;
+@@ -219,6 +202,55 @@
+    .form-actions button:hover {
+      background: #0066cc;
+    }
+
+    /* Modal styles */
     .modal-overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.6);
       display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      background-color: rgba(0, 0, 0, 0.6);
     }
+
     .modal-content {
       background: white;
+      margin: 100px auto;
       padding: 24px;
+      width: 90%;
+      max-width: 400px;
       border-radius: 12px;
-      max-width: 360px;
-      width: 100%;
-      text-align: left;
+      text-align: center;
+      box-shadow: 0 4px 12px var(--shadow);
       position: relative;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
+
     .modal-content img {
-      display: block;
-      margin: 0 auto 12px;
-      max-width: 80px;
-      height: auto;
+      max-width: 120px;
+      margin-bottom: 12px;
     }
-    .modal-content h2 {
-      margin: 0 0 8px;
-      font-size: 18px;
-      text-align: center;
+
+    .modal-content input[type="number"] {
+      width: 80px;
+      padding: 8px;
+      margin-top: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
     }
-    .modal-details {
-      font-size: 15px;
-      text-align: center;
-    }
+
     .modal-close {
       position: absolute;
       top: 12px;
       right: 16px;
       font-size: 24px;
+      font-weight: bold;
+      color: #333;
       cursor: pointer;
-    }
-    .modal-footer input {
-      width: 50px;
-      text-align: center;
-      padding: 6px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    .modal-footer button {
-      padding: 6px 12px;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .error-message {
-      color: red;
-      font-size: 13px;
-      margin-top: 8px;
-      text-align: center;
-    }
-    .toast {
-      position: fixed;
-      bottom: 80px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #323232;
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 6px;
-      font-size: 14px;
-      display: none;
-      z-index: 9999;
     }
   </style>
 </head>
 <body>
-  <div class="toast" id="toast">Item added to cart</div>
-  <!-- Rest of HTML content remains here, including the form, modals, and scripts -->
-</body>
-</html>
-
-<form id="wholesaleForm">
-    <header>
-      <h1>Wholesale Orders West</h1>
-      <div class="order-total-header">Total: $0.00<br><small>Includes 5% GST</small></div>
-    </header>
-    <main>
-      <div class="buyer-info">
-        <label for="name">Full Name</label>
-        <input id="name" name="fullName" type="text" required>
-        <label for="company">Company Name</label>
-        <input id="company" name="companyName" type="text" required>
-        <label for="email">Email Address</label>
-        <input id="email" name="email" type="email" required>
-      </div>
-      <div id="productList" class="beer-grid"></div>
-      <div class="form-actions" style="text-align:center; margin-top: 20px;">
-        <button type="submit">Submit Order</button>
-      </div>
+@@ -249,23 +281,17 @@
     </main>
   </form>
 
   <div class="modal-overlay" id="productModal">
-    <div class="modal-content" id="modalContent"></div>
+    <div class="modal-content" id="modalContent">
+      <span class="modal-close" onclick="closeModal()">×</span>
+    </div>
+  </div>
+
+  <div class="loading-container" id="loadingSpinner">
+    <div class="loading-spinner"></div>
   </div>
 
   <script>
+    function validateQty(input, maxQty) {
+      const val = parseInt(input.value || '0');
+      const errorDiv = input.nextElementSibling;
+      if (val > maxQty) {
+        errorDiv.style.display = 'block';
+        input.classList.add('error-border');
+      } else {
+        errorDiv.style.display = 'none';
+        input.classList.remove('error-border');
+      }
+    }
+
     async function loadInventory() {
       const res = await fetch('https://docs.google.com/spreadsheets/d/177OyfU6g2jc8FqdPyzk5tw-tcEwlUvsVgPdr80rDGVU/export?format=csv');
       const text = await res.text();
-      const rows = text.trim().split('\n').map(row => row.split(','));
-      const headers = rows.shift();
-      const grouped = {};
-      for (const row of rows) {
-        const [title, pack, retail, wholesale, img, casePrice, status, qty] = row;
-        if (status !== 'yes') continue;
-        const brewery = title.split(' (')[0];
-        if (!grouped[brewery]) grouped[brewery] = [];
-        grouped[brewery].push({ title, pack, wholesale, img, qty });
-      }
-      let html = '';
-      for (const brewery in grouped) {
-        html += `<details><summary>${brewery}</summary>`;
-        for (const item of grouped[brewery]) {
-          const id = item.title.replace(/\W+/g, '_');
+@@ -288,16 +314,15 @@
+          if (status !== 'yes') continue;
+          const id = title.replace(/\W+/g, '_');
           html += `
-            <div class="beer-card" onclick="openModal('${id}', \`${item.title}\`, '${item.img}', '${item.pack}', '${item.wholesale}', ${item.qty})">
-              <img src="${item.img}" alt="${item.title}" />
-              <div><strong>${item.title}</strong></div>
-              <div>$${item.wholesale} / ${item.pack}</div>
-              <div>In Stock: ${item.qty}</div>
-              <input type="hidden" name="item_${id}_title" value="${item.title}">
-              <input type="hidden" name="item_${id}_price" value="${item.wholesale}">
-              <input type="number" name="item_${id}_cases" value="0" style="display:none">
-            </div>`;
+            <div class="beer-card">
+            <div class="beer-card" onclick="openModal('${id}', \`${title}\`, '${img}', '${pack}', '${wholesale}', ${qty})">
+              <img src="${img}" alt="${title}" />
+              <div><strong>${title}</strong></div>
+              <div>$${wholesale} / ${pack}</div>
+              <div>In Stock: ${qty}</div>
+              <input type="number" name="item_${id}_cases" min="0" value="0" onchange="validateQty(this, ${qty}); updateTotal()">
+              <div class="error-msg" style="color:red; font-size:13px; display:none;">Not enough stock available</div>
+              <input type="hidden" name="item_${id}_title" value="${title}">
+              <input type="hidden" name="item_${id}_price" value="${wholesale}">
+            </div>
+            <input type="hidden" name="item_${id}_title" value="${title}">
+            <input type="hidden" name="item_${id}_price" value="${wholesale}">
+            <input type="number" name="item_${id}_cases" value="0" style="display:none;">
+          `;
         }
-        html += '</details>';
-      }
+        html += '</div></details>';
+@@ -306,16 +331,46 @@
       document.getElementById('productList').innerHTML = html;
     }
 
     function openModal(id, title, img, pack, wholesale, qty) {
-      const inputVal = document.querySelector(`[name='item_${id}_cases']`).value || 0;
-      document.getElementById('modalContent').innerHTML = `
-        <span class='modal-close' onclick='closeModal()'>&times;</span>
-        <img src='${img}' alt='${title}' />
+      const content = document.getElementById('modalContent');
+      const inputSelector = `input[name='item_${id}_cases']`;
+      const currentValue = document.querySelector(inputSelector)?.value || 0;
+
+      content.innerHTML = `
+        <span class="modal-close" onclick="closeModal()">×</span>
+        <img src="${img}" alt="${title}" />
         <h2>${title}</h2>
         <p><strong>Pack:</strong> ${pack}</p>
         <p><strong>Wholesale Price:</strong> $${wholesale}</p>
         <p><strong>Available:</strong> ${qty}</p>
-        <input type='number' id='modalQtyInput' min='0' max='${qty}' value='${inputVal}' oninput="validateQuantity(this, ${qty})" />
-        <div class='error-message' id='error-msg'></div>
+        <input type="number" id="modalQtyInput" min="0" max="${qty}" value="${currentValue}" />
         <br><br>
-        <button onclick='saveModalQty("${id}")'>Add to Order</button>`;
-      document.getElementById('productModal').style.display = 'flex';
+        <button onclick="saveModalQty('${id}')">Add to Order</button>
+      `;
+
+      document.getElementById('productModal').style.display = 'block';
     }
 
     function closeModal() {
@@ -283,7 +342,8 @@
 
     function saveModalQty(id) {
       const qty = document.getElementById('modalQtyInput').value;
-      document.querySelector(`[name='item_${id}_cases']`).value = qty;
+      const input = document.querySelector(`input[name='item_${id}_cases']`);
+      input.value = qty;
       updateTotal();
       closeModal();
     }
@@ -291,54 +351,57 @@
     function updateTotal() {
       let subtotal = 0;
       const inputs = document.querySelectorAll("input[name^='item_'][name$='_cases']");
+      const inputs = document.querySelectorAll(\"input[name^='item_'][name$='_cases']\");
       inputs.forEach(input => {
         const qty = parseInt(input.value || '0');
         const base = input.name.replace('_cases', '');
         const price = parseFloat(document.querySelector(`[name='${base}_price']`).value || '0');
+        if (!input.classList.contains('error-border')) {
+          subtotal += qty * price;
+        }
         subtotal += qty * price;
       });
       const gst = subtotal * 0.05;
       const total = subtotal + gst;
-      document.querySelector('.order-total-header').innerHTML = `Total: $${total.toFixed(2)}<br><small>Includes 5% GST</small>`;
-    }
-
-    function validateQuantity(input, maxQty) {
-      const errorEl = document.getElementById('error-msg');
-      const qty = parseInt(input.value, 10);
-      if (qty > maxQty) {
-        errorEl.textContent = `You can only order up to ${maxQty} of this item.`;
-      } else {
-        errorEl.textContent = '';
-      }
-    }
-
+@@ -325,8 +380,8 @@
     document.getElementById('wholesaleForm').addEventListener('submit', async function (e) {
       e.preventDefault();
+
       const submitBtn = document.querySelector("button[type='submit']");
+      const spinner = document.getElementById("loadingSpinner");
+      const submitBtn = document.querySelector(\"button[type='submit']\");
+      const spinner = document.getElementById(\"loadingSpinner\");
+
       submitBtn.disabled = true;
-      const formData = new FormData(this);
-      const data = new URLSearchParams();
-      for (const [key, val] of formData.entries()) {
-        if (val !== '') data.append(key, val);
+      spinner.style.display = 'flex';
+@@ -338,28 +393,35 @@
       }
+
       try {
         const res = await fetch("https://script.google.com/macros/s/AKfycbzlClfhUfPWSc7UibV7wc9DvtLMScZLRWRcQwB0kdZ10CAO9VySH8Q4-OGa4GtsUCx4/exec", {
           method: "POST",
+        const res = await fetch(\"https://script.google.com/macros/s/AKfycbzlClfhUfPWSc7UibV7wc9DvtLMScZLRWRcQwB0kdZ10CAO9VySH8Q4-OGa4GtsUCx4/exec\", {
+          method: \"POST\",
           body: data
         });
+
         if (res.ok) {
           alert("✅ Order submitted!");
+          alert(\"✅ We Have Recieved Your Order!\");
           document.getElementById('wholesaleForm').reset();
           document.getElementById('productList').innerHTML = '';
           loadInventory();
           updateTotal();
         } else {
           alert("❌ Something went wrong. Please try again.");
+          alert(\"❌ Something went wrong. Please try again.\");
         }
       } catch (error) {
         alert("⚠️ Submission failed. Check your connection and try again.");
+        alert(\"⚠️ Submission failed. Check your connection and try again.\");
       } finally {
         submitBtn.disabled = false;
+        spinner.style.display = 'none';
       }
     });
 
@@ -347,7 +410,7 @@
       if (event.target === modal) {
         closeModal();
       }
-    };
+    }
 
     loadInventory();
   </script>
