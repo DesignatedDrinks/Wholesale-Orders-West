@@ -25,17 +25,16 @@
       padding: 20px;
       box-shadow: 0 2px 4px var(--shadow);
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
     }
     header h1 {
       margin: 0;
-      font-size: 24px;
+      font-size: 26px;
     }
     .order-total-header {
       font-size: 16px;
-      text-align: right;
     }
     main {
       max-width: 960px;
@@ -51,19 +50,22 @@
       padding: 10px;
       border-radius: 6px;
       border: 1px solid #ccc;
+      box-sizing: border-box;
     }
     .beer-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
     }
     .beer-card {
-      background: white;
+      background: var(--card-bg);
+      border-radius: 10px;
+      box-shadow: 0 2px 6px var(--shadow);
       padding: 12px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px var(--shadow);
-      width: calc(50% - 20px);
-      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
       transition: transform 0.2s ease;
     }
     .beer-card:hover {
@@ -71,35 +73,14 @@
     }
     .beer-card img {
       width: 100%;
-      height: auto;
-      max-height: 140px;
+      max-height: 120px;
       object-fit: contain;
+      margin-bottom: 10px;
     }
-    @media (max-width: 600px) {
-      .beer-card {
-        width: 100%;
-      }
-      .modal-content {
-        width: 95%;
-        font-size: 14px;
-        padding: 16px;
-      }
-      .modal-content img {
-        max-height: 100px;
-      }
-      .order-summary {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: white;
-        padding: 12px;
-        box-shadow: 0 -2px 4px var(--shadow);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        z-index: 1000;
-      }
+    .beer-card input[type="number"] {
+      width: 60px;
+      margin-top: 8px;
+      padding: 5px;
     }
     .modal-overlay {
       position: fixed;
@@ -113,29 +94,26 @@
     }
     .modal-content {
       background: white;
-      padding: 24px;
-      border-radius: 12px;
-      max-width: 400px;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 360px;
       width: 90%;
-      text-align: left;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       position: relative;
+      text-align: left;
     }
     .modal-content img {
       max-width: 100%;
-      height: auto;
+      max-height: 140px;
       margin-bottom: 12px;
+      object-fit: contain;
     }
     .modal-close {
       position: absolute;
-      top: 12px;
-      right: 16px;
+      top: 10px;
+      right: 14px;
       font-size: 24px;
       cursor: pointer;
-    }
-    .error-message {
-      color: red;
-      font-size: 14px;
-      margin-top: 8px;
     }
     .toast {
       position: fixed;
@@ -150,15 +128,27 @@
       display: none;
       z-index: 9999;
     }
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 22px;
+      }
+      .modal-content {
+        max-width: 90vw;
+        font-size: 15px;
+      }
+      .beer-card img {
+        max-height: 100px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="toast" id="toast">Item added to cart</div>
-  <!-- Rest of HTML content remains here, including the form, modals, and scripts -->
+  <!-- Full form, product list, modal, and script will go below -->
 </body>
 </html>
 
-  <form id="wholesaleForm">
+<form id="wholesaleForm">
     <header>
       <h1>Wholesale Orders West</h1>
       <div class="order-total-header">Total: $0.00<br><small>Includes 5% GST</small></div>
