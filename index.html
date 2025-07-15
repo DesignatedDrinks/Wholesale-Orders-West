@@ -177,7 +177,6 @@
       text-align: center;
       box-shadow: 0 1px 6px var(--shadow);
       transition: transform 0.2s ease;
-      cursor: pointer;
     }
 
     .beer-card:hover {
@@ -205,71 +204,50 @@
     .form-actions {
       text-align: center;
       margin-top: 40px;
-@@ -219,6 +202,55 @@
+    }
+
+    .form-actions button {
+      background: var(--primary);
+      color: white;
+      padding: 14px 30px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
     .form-actions button:hover {
       background: #0066cc;
-    }
-
-    /* Modal styles */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      z-index: 9999;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow-y: auto;
-      background-color: rgba(0, 0, 0, 0.6);
-    }
-
-    .modal-content {
-      background: white;
-      margin: 100px auto;
-      padding: 24px;
-      width: 90%;
-      max-width: 400px;
-      border-radius: 12px;
-      text-align: center;
-      box-shadow: 0 4px 12px var(--shadow);
-      position: relative;
-    }
-
-    .modal-content img {
-      max-width: 120px;
-      margin-bottom: 12px;
-    }
-
-    .modal-content input[type="number"] {
-      width: 80px;
-      padding: 8px;
-      margin-top: 12px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 12px;
-      right: 16px;
-      font-size: 24px;
-      font-weight: bold;
-      color: #333;
-      cursor: pointer;
     }
   </style>
 </head>
 <body>
-@@ -249,23 +281,17 @@
+  <form id="wholesaleForm">
+    <header>
+      <div class="logo-title">
+        <img src="https://www.designateddrinks.ca/cdn/shop/files/DDWebLogo_150x.png?v=1648823188" alt="Designated Drinks Logo">
+        <h1>Wholesale Orders West</h1>
+      </div>
+      <div class="submit-top">
+        <button type="submit">Submit Order</button>
+        <div class="order-total-header">Total: $0.00<br><small>Includes 5% GST</small></div>
+      </div>
+    </header>
+    <main>
+      <div class="buyer-info">
+        <label for="name">Full Name</label>
+        <input id="name" name="fullName" type="text" required>
+        <label for="company">Company Name</label>
+        <input id="company" name="companyName" type="text" required>
+        <label for="email">Email Address</label>
+        <input id="email" name="email" type="email" required>
+      </div>
+      <div id="productList"></div>
+      <div class="form-actions">
+        <button type="submit">Submit Order</button>
+      </div>
     </main>
   </form>
-
-  <div class="modal-overlay" id="productModal">
-    <div class="modal-content" id="modalContent">
-      <span class="modal-close" onclick="closeModal()">×</span>
-    </div>
-  </div>
 
   <div class="loading-container" id="loadingSpinner">
     <div class="loading-spinner"></div>
@@ -291,12 +269,26 @@
     async function loadInventory() {
       const res = await fetch('https://docs.google.com/spreadsheets/d/177OyfU6g2jc8FqdPyzk5tw-tcEwlUvsVgPdr80rDGVU/export?format=csv');
       const text = await res.text();
-@@ -288,16 +314,15 @@
+      const rows = text.trim().split('\n').map(row => row.split(','));
+      const headers = rows.shift();
+      const grouped = {};
+
+      for (const row of rows) {
+        const title = row[0];
+        const brewery = title.split(' (')[0];
+        if (!grouped[brewery]) grouped[brewery] = [];
+        grouped[brewery].push(row);
+      }
+
+      let html = '';
+      for (const brewery in grouped) {
+        html += <details><summary>${brewery}</summary><div class="beer-grid">;
+        for (const row of grouped[brewery]) {
+          const [title, pack, retail, wholesale, img, casePrice, status, qty] = row;
           if (status !== 'yes') continue;
           const id = title.replace(/\W+/g, '_');
-          html += `
+          html += 
             <div class="beer-card">
-            <div class="beer-card" onclick="openModal('${id}', \`${title}\`, '${img}', '${pack}', '${wholesale}', ${qty})">
               <img src="${img}" alt="${title}" />
               <div><strong>${title}</strong></div>
               <div>$${wholesale} / ${pack}</div>
@@ -306,111 +298,67 @@
               <input type="hidden" name="item_${id}_title" value="${title}">
               <input type="hidden" name="item_${id}_price" value="${wholesale}">
             </div>
-            <input type="hidden" name="item_${id}_title" value="${title}">
-            <input type="hidden" name="item_${id}_price" value="${wholesale}">
-            <input type="number" name="item_${id}_cases" value="0" style="display:none;">
-          `;
+          ;
         }
         html += '</div></details>';
-@@ -306,16 +331,46 @@
+      }
+
       document.getElementById('productList').innerHTML = html;
-    }
-
-    function openModal(id, title, img, pack, wholesale, qty) {
-      const content = document.getElementById('modalContent');
-      const inputSelector = `input[name='item_${id}_cases']`;
-      const currentValue = document.querySelector(inputSelector)?.value || 0;
-
-      content.innerHTML = `
-        <span class="modal-close" onclick="closeModal()">×</span>
-        <img src="${img}" alt="${title}" />
-        <h2>${title}</h2>
-        <p><strong>Pack:</strong> ${pack}</p>
-        <p><strong>Wholesale Price:</strong> $${wholesale}</p>
-        <p><strong>Available:</strong> ${qty}</p>
-        <input type="number" id="modalQtyInput" min="0" max="${qty}" value="${currentValue}" />
-        <br><br>
-        <button onclick="saveModalQty('${id}')">Add to Order</button>
-      `;
-
-      document.getElementById('productModal').style.display = 'block';
-    }
-
-    function closeModal() {
-      document.getElementById('productModal').style.display = 'none';
-    }
-
-    function saveModalQty(id) {
-      const qty = document.getElementById('modalQtyInput').value;
-      const input = document.querySelector(`input[name='item_${id}_cases']`);
-      input.value = qty;
-      updateTotal();
-      closeModal();
     }
 
     function updateTotal() {
       let subtotal = 0;
       const inputs = document.querySelectorAll("input[name^='item_'][name$='_cases']");
-      const inputs = document.querySelectorAll(\"input[name^='item_'][name$='_cases']\");
       inputs.forEach(input => {
         const qty = parseInt(input.value || '0');
         const base = input.name.replace('_cases', '');
-        const price = parseFloat(document.querySelector(`[name='${base}_price']`).value || '0');
+        const price = parseFloat(document.querySelector([name='${base}_price']).value || '0');
         if (!input.classList.contains('error-border')) {
           subtotal += qty * price;
         }
-        subtotal += qty * price;
       });
       const gst = subtotal * 0.05;
       const total = subtotal + gst;
-@@ -325,8 +380,8 @@
+      document.querySelector('.order-total-header').innerHTML = Total: $${total.toFixed(2)}<br><small>Includes 5% GST</small>;
+    }
+
     document.getElementById('wholesaleForm').addEventListener('submit', async function (e) {
       e.preventDefault();
 
       const submitBtn = document.querySelector("button[type='submit']");
       const spinner = document.getElementById("loadingSpinner");
-      const submitBtn = document.querySelector(\"button[type='submit']\");
-      const spinner = document.getElementById(\"loadingSpinner\");
 
       submitBtn.disabled = true;
       spinner.style.display = 'flex';
-@@ -338,28 +393,35 @@
+
+      const formData = new FormData(this);
+      const data = new URLSearchParams();
+      for (const [key, val] of formData.entries()) {
+        if (val !== '') data.append(key, val);
       }
 
       try {
         const res = await fetch("https://script.google.com/macros/s/AKfycbzlClfhUfPWSc7UibV7wc9DvtLMScZLRWRcQwB0kdZ10CAO9VySH8Q4-OGa4GtsUCx4/exec", {
           method: "POST",
-        const res = await fetch(\"https://script.google.com/macros/s/AKfycbzlClfhUfPWSc7UibV7wc9DvtLMScZLRWRcQwB0kdZ10CAO9VySH8Q4-OGa4GtsUCx4/exec\", {
-          method: \"POST\",
           body: data
         });
 
         if (res.ok) {
           alert("✅ Order submitted!");
-          alert(\"✅ We Have Recieved Your Order!\");
           document.getElementById('wholesaleForm').reset();
           document.getElementById('productList').innerHTML = '';
           loadInventory();
           updateTotal();
         } else {
           alert("❌ Something went wrong. Please try again.");
-          alert(\"❌ Something went wrong. Please try again.\");
         }
       } catch (error) {
         alert("⚠️ Submission failed. Check your connection and try again.");
-        alert(\"⚠️ Submission failed. Check your connection and try again.\");
       } finally {
         submitBtn.disabled = false;
         spinner.style.display = 'none';
       }
     });
-
-    window.onclick = function (event) {
-      const modal = document.getElementById('productModal');
-      if (event.target === modal) {
-        closeModal();
-      }
-    }
 
     loadInventory();
   </script>
