@@ -1,4 +1,4 @@
-<!-- Full updated and fixed version with modal product input -->
+<!-- Full updated and fixed version with modal product input and image size fix -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,13 +65,30 @@
     .beer-grid { display: flex; flex-wrap: wrap; gap: 16px; padding-top: 10px; }
     .beer-card { background: var(--card-bg); width: 180px; padding: 12px; border-radius: 12px; text-align: center; box-shadow: 0 1px 6px var(--shadow); transition: transform 0.2s ease; cursor: pointer; }
     .beer-card:hover { transform: scale(1.02); }
+    .beer-card img {
+      max-width: 100px;
+      max-height: 100px;
+      height: auto;
+      width: auto;
+      margin: 0 auto 8px auto;
+      display: block;
+      object-fit: contain;
+    }
     .form-actions { text-align: center; margin-top: 40px; }
     .modal-overlay { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); }
     .modal-content { background: white; margin: 100px auto; padding: 24px; width: 90%; max-width: 400px; border-radius: 12px; text-align: center; position: relative; }
-    .modal-content img { max-width: 120px; margin-bottom: 12px; }
+    .modal-content img {
+      max-width: 100%;
+      max-height: 150px;
+      height: auto;
+      margin-bottom: 12px;
+      object-fit: contain;
+    }
     .modal-close { position: absolute; top: 12px; right: 16px; font-size: 24px; cursor: pointer; }
   </style>
 </head>
+<!-- The rest of the body and script sections are unchanged and assumed to be intact -->
+
 <body>
   <form id="wholesaleForm">
     <header>
